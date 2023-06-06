@@ -166,7 +166,7 @@ function restore_on_dir($dir, $parentid, $options, $verbose) {
     if (!$category) {
       //Crete new category
       $obj->parent = $parentid;
-      $category = coursecat::create($obj);
+      $category =  \core_course_category::create($obj);
 
       if (!$category) {
         $verbose && mtrace("Could not create category $obj->name with parent $parentid");

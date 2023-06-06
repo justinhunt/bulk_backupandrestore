@@ -39,6 +39,7 @@ define(['jquery', 'core/config'], function($, config) {
     var record_row = $('#record-' + record);
 
     var categoryId = record_row.data('category');
+    var categoryPath = record_row.data('categorypath');
     var folder = record_row.data('folder');
     var filename = record_row.data('filename');
     var name = record_row.data('name');
@@ -63,6 +64,7 @@ define(['jquery', 'core/config'], function($, config) {
           'sesskey': session,
           'key': session_key,
           'category': categoryId,
+          'categorypath': categoryPath,
           'folder': folder,
           'filename': filename,
           'name': name,

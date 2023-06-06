@@ -41,6 +41,8 @@ define(['jquery', 'core/config'], function($, config) {
     record = current;
 
     var courseId = $('.course-row-' + record).data('course');
+    var courseCategoryName = $('.course-row-' + record).data('category-name');
+    var courseCategoryPath = $('.course-row-' + record).data('category-path');
 
     if (record > 0 && record <= total_courses) {
 
@@ -60,6 +62,7 @@ define(['jquery', 'core/config'], function($, config) {
           'sesskey': session,
           'key': session_key,
           'outdir' : outdir,
+          'categorypath' : courseCategoryPath,
           'backupusers' : backup_users,
           'backupblocks' : backup_blocks,
           'last' : (record == total_courses)?true:false

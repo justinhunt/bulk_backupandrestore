@@ -213,13 +213,33 @@ echo html_writer::tag('th', get_string('status', 'tool_bulk_backupandrestore') ,
 echo html_writer::end_tag('thead');
 $n = 1;
 foreach ($courses as $course) {
-  echo html_writer::start_tag
+    $thecategory = \core_course_category::get($course->category);
+    $cleanpath = preg_replace('/\s+/', '_', trim($thecategory->get_nested_name(false,'/')));
+    $cleanpath = preg_replace('/[^_a-zA-Z0-9\/]/', '',$cleanpath );
+    $cleanpath = remove_accents( $cleanpath);
+
+    if (!is_dir($outdir . '/' . $cleanpath)) {
+        if(is_dir($outdir)){
+            if (!mkdir($outdir . '/' . $cleanpath, 0755,true)) {
+                 echo("Could not create category directory $outdir   $cleanpath");
+                continue;
+            }
+        }
+    }
+
+
+
+
+    echo html_writer::start_tag
     (
       'tr', 
       [
         'id' => 'course-' . $course->id, 
         'class' => 'course-row course-row-' . $n, 
-        'data-course' => $course->id 
+        'data-course' => $course->id,
+        'data-category' => $course->category,
+        'data-category-name' => $course->category_name,
+        'data-category-path' => $cleanpath,
       ]
     );
   echo html_writer::tag('td', $course->id);

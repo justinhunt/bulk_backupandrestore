@@ -45,7 +45,7 @@ $session = optional_param('sesskey', '', PARAM_RAW);
 $outdir = optional_param('outdir', '', PARAM_RAW);
 $backup_users = optional_param('backupusers', 0, PARAM_INT);
 $backup_blocks = optional_param('backupblocks', 0, PARAM_INT);
-
+$category_path = optional_param('categorypath', '', PARAM_RAW);
 //Unique key for bulk backup task
 $key = optional_param('key', '', PARAM_RAW);
 
@@ -72,6 +72,7 @@ if ($report) {
   SELECT 
   bk.id AS backupid,
   bk.category,
+  bk.categorypath, 
   bk.folder,
   bk.filename,
   bk.course as courseid,
@@ -81,6 +82,7 @@ if ($report) {
   bk.users,
   bk.blocks,
   bk.status
+        
 
   FROM {bulk_course_backup} bk
 
@@ -92,6 +94,7 @@ if ($report) {
   $columns = array(
     'backupid' => 'BackupID',
     'category' => 'CategoryId',
+    'categorypath' => 'CategoryPath',
     'folder' => 'Folder',
     'filename' => 'Filename',
     'courseid' => 'Course',
@@ -100,10 +103,11 @@ if ($report) {
     'shortname' => 'Shortname',
     'users' => 'Users',
     'blocks' => 'Blocks',
-    'status' => 'Success'
+    'status' => 'Success',
+
      );
 
-  download_as_dataformat('bulk_backup_' . $key, 'csv', $columns, $records);
+  \core\dataformat::download_data('bulk_backup_' . $key, 'csv', $columns, $records);
   exit;
 }
 
@@ -134,8 +138,12 @@ if (!$course) {
 
 $backup_options = [
   'users' => $backup_users,
-  'blocks' =>  $backup_blocks
+  'blocks' =>  $backup_blocks,
 ];
+
+if($category_path) {
+  $outdir .= '/' . $category_path;
+}
 
 $backup_result = bulk_backup_course($course, $outdir, $backup_options);
 
@@ -157,6 +165,7 @@ $record->session = $key;
 $record->timecreated = usertime(time());
 $record->userid =  $USER->id;
 $record->category = $course->category;
+$record->categorypath = $category_path;
 $record->course = $course->id;
 $record->idnumber = $course->idnumber;
 $record->fullname = $course->fullname;

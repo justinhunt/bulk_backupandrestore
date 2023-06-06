@@ -41,7 +41,8 @@ admin_externalpage_setup('tool_bulk_backupandrestore', '', null);
 
 //Page parameters
 $session = optional_param('sesskey', '', PARAM_RAW);
-$categoryId = optional_param('category', 0, PARAM_INT);
+$category_id = optional_param('category', 0, PARAM_INT);
+$category_path = optional_param('categorypath', '', PARAM_RAW);
 $name = optional_param('name', '', PARAM_RAW);
 $shortname = optional_param('shortname', '', PARAM_RAW);
 $folder = optional_param('folder', '', PARAM_RAW);
@@ -76,6 +77,7 @@ if ($report) {
   SELECT 
   rst.id AS restoreid,
   rst.category,
+  rst.categorypath,
   rst.folder,
   rst.filename,
   rst.course as courseid,
@@ -111,7 +113,7 @@ if ($report) {
   exit;
 }
 
-if (!$categoryId) {
+if (!$category_id) {
   bulk_ajax_helper::response
     (
       [
@@ -121,7 +123,7 @@ if (!$categoryId) {
     );
 }
 
-$category = $DB->get_record('course_categories', ['id' => $categoryId]);
+$category = $DB->get_record('course_categories', ['id' => $category_id]);
 if (!$category) {
   bulk_ajax_helper::response
     (
@@ -213,6 +215,7 @@ $record->session = $key;
 $record->timecreated = usertime(time());
 $record->userid =  $USER->id;
 $record->category = $course->category;
+$record->categorypath = $category_path;
 $record->course = $course->id;
 $record->idnumber = $course->idnumber;
 $record->fullname = $course->fullname;

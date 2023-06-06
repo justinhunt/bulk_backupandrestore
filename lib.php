@@ -71,6 +71,8 @@ class restore_form extends moodleform {
 
         $mform->addElement('header', 'settingsheader', get_string('restorecourses', 'tool_bulk_backupandrestore'));
 
+        $mform->addElement('coursecat', 'categoryid', get_string('restorecategory', 'tool_bulk_backupandrestore'));
+
         $url = new moodle_url('/admin/tool/bulk_backupandrestore/example.csv');
         $link = html_writer::link($url, 'example.csv');
         $mform->addElement('static', 'examplecsv', get_string('examplecsv', 'tool_bulk_backupandrestore'), $link);

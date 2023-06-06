@@ -84,7 +84,9 @@ $string['encoding'] = 'Encoding';
 
 $string['restore'] = 'Restore';
 
-$string['invalidcolumns'] = 'The CSV file must have 8 columns: CategoryId,Folder,Filename,Name,Shortname,IdNumber,Users,Blocks';
+$string['restorecategory'] = 'Restore category (top)';
+
+$string['invalidcolumns'] = 'The CSV file must have 10 columns: id,CategoryId,Folder,Filename,course, idnumber, Name,Shortname,Users,Blocks';
 
 $string['invalidcategory'] = 'Invalid category';
 $string['invalidfolder'] = 'Folder does not exist or not accesible';

@@ -70,7 +70,7 @@ if ( ($formdata = $form->get_data())) {
     print_error('csvloaderror', '', $returnurl, $csvloaderror);
   }
 
-  $data = get_csv_data($formdata, $cir);
+  $data = get_csv_data($formdata, $cir,$returnurl);
 
   if (count($data) > 0) {
     $display_form  = false;
@@ -176,6 +176,7 @@ if ($display_table) {
           'id' => 'record-' . $record->id, 
           'class' => 'record-row record-row-' . $n, 
           'data-category' => $record->category,
+          'data-categorypath' => $record->categorypath,
           'data-folder' => $record->folder,
           'data-filename' => $record->filename,
           'data-name' => $record->name,
@@ -214,10 +215,10 @@ $PAGE->requires->js_call_amd('tool_bulk_backupandrestore/restore', 'init');
 echo $OUTPUT->footer();
 
 
-function get_csv_data($formdata, $cir) {
+function get_csv_data($formdata, $cir,$returnurl) {
   $columns = $cir->get_columns();
 
-  if ( count($columns) != 8) {
+  if ( count($columns) < 10) {
     print_error('csvloaderror', '', $returnurl, get_string('invalidcolumns', 'tool_bulk_backupandrestore'));
   }
 
@@ -231,14 +232,15 @@ function get_csv_data($formdata, $cir) {
       $row = $columns;
       $obj = new Stdclass;
       $obj->id = $id;
-      $obj->category = $row[0];
-      $obj->folder = $row[1];
-      $obj->filename = $row[2];
-      $obj->name = $row[3];
-      $obj->shortname = $row[4];
-      $obj->idnumber = $row[5];
-      $obj->users = $row[6];
-      $obj->blocks = $row[7];
+      $obj->category = $row[1];
+      $obj->categorypath = $row[2];
+      $obj->folder = $row[3];
+      $obj->filename = $row[4];
+      $obj->name = $row[7];
+      $obj->shortname = $row[8];
+      $obj->idnumber = $row[6];
+      $obj->users = $row[9];
+      $obj->blocks = $row[10];
       $id++;
 
       validate_restore_record($obj);
@@ -252,14 +254,15 @@ function get_csv_data($formdata, $cir) {
   while ($row = $cir->next()) {
     $obj = new Stdclass;
     $obj->id = $id;
-    $obj->category = $row[0];
-    $obj->folder = $row[1];
-    $obj->filename = $row[2];
-    $obj->name = $row[3];
-    $obj->shortname = $row[4];
-    $obj->idnumber = $row[5];
-    $obj->users = $row[6];
-    $obj->blocks = $row[7];
+      $obj->category = $row[1];
+      $obj->categorypath = $row[2];
+      $obj->folder = $row[3];
+      $obj->filename = $row[4];
+      $obj->name = $row[5];
+      $obj->shortname = $row[6];
+      $obj->idnumber = $row[7];
+      $obj->users = $row[9];
+      $obj->blocks = $row[10];
 
     $id++;
 

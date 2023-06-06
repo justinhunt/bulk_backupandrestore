@@ -60,6 +60,8 @@ echo $OUTPUT->footer();
 function list_categories($parentid) {
   global $DB;
   global $OUTPUT;
+  global $CFG;
+
   $args = ['parent' => $parentid];
   $args['visible'] = 1;
 
@@ -104,7 +106,8 @@ function list_categories($parentid) {
 
     //Default values
     $default_data = [
-      'id' => $parent_record->id
+      'id' => $parent_record->id,
+        'outdir'=> $CFG->dataroot . '/temp/backup'
     ];
 
     $form->set_data($default_data);
