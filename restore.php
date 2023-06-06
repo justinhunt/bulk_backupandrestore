@@ -75,6 +75,11 @@ if ( ($formdata = $form->get_data())) {
   if (count($data) > 0) {
     $display_form  = false;
     $display_table = true;
+      foreach ($data as $item) {
+          //hack to set the category id
+        $item->category=$formdata->categoryid;
+
+    }
   }
 }
 
@@ -232,15 +237,15 @@ function get_csv_data($formdata, $cir,$returnurl) {
       $row = $columns;
       $obj = new Stdclass;
       $obj->id = $id;
-      $obj->category = $row[1];
-      $obj->categorypath = $row[2];
-      $obj->folder = $row[3];
-      $obj->filename = $row[4];
-      $obj->name = $row[7];
-      $obj->shortname = $row[8];
-      $obj->idnumber = $row[6];
-      $obj->users = $row[9];
-      $obj->blocks = $row[10];
+        $obj->category = $row[1];
+        $obj->categorypath = $row[2];
+        $obj->folder = $row[3];
+        $obj->filename = $row[4];
+        $obj->name = $row[7];
+        $obj->shortname = $row[8];
+        $obj->idnumber = $row[6];
+        $obj->users = $row[9];
+        $obj->blocks = $row[10];
       $id++;
 
       validate_restore_record($obj);
@@ -258,9 +263,9 @@ function get_csv_data($formdata, $cir,$returnurl) {
       $obj->categorypath = $row[2];
       $obj->folder = $row[3];
       $obj->filename = $row[4];
-      $obj->name = $row[5];
-      $obj->shortname = $row[6];
-      $obj->idnumber = $row[7];
+      $obj->name = $row[7];
+      $obj->shortname = $row[8];
+      $obj->idnumber = $row[6];
       $obj->users = $row[9];
       $obj->blocks = $row[10];
 
@@ -299,15 +304,19 @@ function validate_restore_record(&$obj) {
     $obj->errors[] = get_string('invalidfolder', 'tool_bulk_backupandrestore');
   }
 
-  if ($obj->folder and !in_array($obj->folder, $folder_cache)) {
-    if (is_dir($obj->folder) and is_readable($obj->folder)) {
-      $folder_cache[] = $obj->folder;
+  $folderpath = $obj->folder;
+  if(!empty($obj->categorypath)){
+      $folderpath = $obj->folder . '/' . $obj->categorypath  ;
+  }
+  if ( $folderpath and !in_array( $folderpath, $folder_cache)) {
+    if (is_dir( $folderpath) and is_readable( $folderpath)) {
+      $folder_cache[] =  $folderpath;
     }else {
       $obj->errors[] = get_string('invalidfolder', 'tool_bulk_backupandrestore');
     }
   }
 
-  $path = $obj->folder . '/' . $obj->filename;
+  $path =  $folderpath . '/' . $obj->filename;
   if (!$obj->filename or !is_file($path) or !is_readable($path)) {
     $obj->errors[] = get_string('invalidfile', 'tool_bulk_backupandrestore');
   }

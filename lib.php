@@ -69,14 +69,18 @@ class restore_form extends moodleform {
     function definition () {
         $mform = $this->_form;
 
-        $mform->addElement('header', 'settingsheader', get_string('restorecourses', 'tool_bulk_backupandrestore'));
 
-        $mform->addElement('coursecat', 'categoryid', get_string('restorecategory', 'tool_bulk_backupandrestore'));
+
+        $mform->addElement('header', 'settingsheader', get_string('restorecourses', 'tool_bulk_backupandrestore'));
 
         $url = new moodle_url('/admin/tool/bulk_backupandrestore/example.csv');
         $link = html_writer::link($url, 'example.csv');
         $mform->addElement('static', 'examplecsv', get_string('examplecsv', 'tool_bulk_backupandrestore'), $link);
         $mform->addHelpButton('examplecsv', 'examplecsv', 'tool_bulk_backupandrestore');
+
+        $categories_list = \core_course_category::make_categories_list();
+        $mform->addElement('select', 'categoryid', get_string('restorecategory', 'tool_bulk_backupandrestore'),  $categories_list);
+        $mform->addRule('categoryid', null, 'required');
 
         $mform->addElement('filepicker', 'restorecsv', get_string('file'), null, ['accepted_types' => '.csv']);
         $mform->addRule('restorecsv', null, 'required');

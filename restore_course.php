@@ -108,8 +108,8 @@ if ($report) {
     'blocks' => 'Blocks',
     'status' => 'Success'
      );
+    core\dataformat::download_data('bulk_restore_' . $key, 'csv', $columns, $records);
 
-  download_as_dataformat('bulk_restore_' . $key, 'csv', $columns, $records);
   exit;
 }
 
@@ -123,8 +123,26 @@ if (!$category_id) {
     );
 }
 
-$category = $DB->get_record('course_categories', ['id' => $category_id]);
-if (!$category) {
+
+$parent_category = $DB->get_record('course_categories', ['id' => $category_id]);
+if(!$parent_category){
+    $parent_category = \core_course_category::get_default();
+}
+
+if(empty($category_path)){
+    $thecategory = $parent_category;
+}else{
+    $category_names = explode('/', $category_path);
+    foreach ($category_names as $category_name) {
+        $thecategory = $DB->get_record('course_categories', ['name' => $category_name, 'parent' => $parent_category->id]);
+        if(!$thecategory){
+           $thecategory = \core_course_category::create(['name' => $category_name, 'parent' => $parent_category->id]);
+        }
+        $parent_category = $thecategory;
+    }
+}
+
+if (!$thecategory) {
   bulk_ajax_helper::response
     (
       [
@@ -135,18 +153,21 @@ if (!$category) {
 
 }
 
-
-if (!$folder or !is_dir($folder) or !is_readable($folder)) {
+$folderpath = $folder;
+if(!empty($category_path)){
+    $folderpath = $folder . '/' . $category_path  ;
+}
+if (!$folderpath or !is_dir($folderpath) or !is_readable($folderpath)) {
   bulk_ajax_helper::response
     (
       [
         'success' => false,
-        'message' => get_string('invalidfolder', 'tool_bulk_backupandrestore')  . $folder
+        'message' => get_string('invalidfolder', 'tool_bulk_backupandrestore')  . $folderpath
       ]
     );
 }
 
-$path = "$folder/$filename";
+$path = "$folderpath/$filename";
 
 if (!$path or !is_file($path) or !is_readable($path)) {
   bulk_ajax_helper::response
@@ -163,7 +184,7 @@ $restore_options = [
   'blocks' =>  $restore_blocks
 ];
 
-$restore_result = bulk_restore_course($category, $path, $restore_options);
+$restore_result = bulk_restore_course($thecategory, $path, $restore_options);
 
 $message = get_string('restoresuccessful', 'tool_bulk_backupandrestore');
 $status = true;

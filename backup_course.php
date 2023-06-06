@@ -142,10 +142,12 @@ $backup_options = [
 ];
 
 if($category_path) {
-  $outdir .= '/' . $category_path;
+  $fulloutdir =  $outdir . '/' . $category_path;
+}else{
+  $fulloutdir =  $outdir;
 }
 
-$backup_result = bulk_backup_course($course, $outdir, $backup_options);
+$backup_result = bulk_backup_course($course, $fulloutdir, $backup_options);
 
 $result = '';
 $filename = '';
