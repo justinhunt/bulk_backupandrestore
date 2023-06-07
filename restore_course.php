@@ -113,7 +113,7 @@ if ($report) {
   exit;
 }
 
-if (!$category_id) {
+if (!is_numeric($category_id)) {
   bulk_ajax_helper::response
     (
       [
@@ -125,8 +125,11 @@ if (!$category_id) {
 
 
 $parent_category = $DB->get_record('course_categories', ['id' => $category_id]);
-if(!$parent_category){
+if(!$parent_category && empty($category_path)){
     $parent_category = \core_course_category::get_default();
+}elseif(!$parent_category){
+    $parent_category = new \stdClass();
+    $parent_category->id = 0;
 }
 
 if(empty($category_path)){

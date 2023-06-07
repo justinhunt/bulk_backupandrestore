@@ -78,7 +78,11 @@ class restore_form extends moodleform {
         $mform->addElement('static', 'examplecsv', get_string('examplecsv', 'tool_bulk_backupandrestore'), $link);
         $mform->addHelpButton('examplecsv', 'examplecsv', 'tool_bulk_backupandrestore');
 
-        $categories_list = \core_course_category::make_categories_list();
+        $categories_list=[];
+        if (has_capability('moodle/category:manage', context_system::instance())) {
+            $categories_list[0] = get_string('top');
+        }
+        $categories_list += \core_course_category::make_categories_list();
         $mform->addElement('select', 'categoryid', get_string('restorecategory', 'tool_bulk_backupandrestore'),  $categories_list);
         $mform->addRule('categoryid', null, 'required');
 

@@ -167,6 +167,9 @@ if ($display_table) {
   $n = 1;
   foreach ($data as $record) {
 
+      //start category
+     $startcategory = \core_course_category::get($record->category);
+
     //Path and errors
     $errors = '';
     foreach ($record->errors as $msg) {
@@ -197,9 +200,10 @@ if ($display_table) {
         'tr', 
         $attrs
       );
-    echo html_writer::tag('td', $record->category);
+    echo html_writer::tag('td', $startcategory->get_formatted_name() . "($record->category)");
     echo html_writer::tag('td', 
      html_writer::tag('div',  $record->name)
+     . html_writer::tag('div',  $record->categorypath)
      . html_writer::tag('div', "$record->filename") . $errors,
     );
     echo html_writer::tag('td', $record->shortname);
