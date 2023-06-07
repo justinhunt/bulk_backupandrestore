@@ -293,7 +293,8 @@ function validate_restore_record(&$obj) {
     $obj->category = 0;
     $obj->errors[] = get_string('invalidcategory', 'tool_bulk_backupandrestore');
   }
-
+/* We will create missing categories, and the original one in the file is not important */
+/*
   if ($obj->category and !isset($category_cache[$obj->category])) {
     $cat = $DB->get_record('course_categories', ['id' => $obj->category]);
     if ($cat) {
@@ -303,6 +304,7 @@ function validate_restore_record(&$obj) {
       $obj->errors[] = get_string('invalidcategory', 'tool_bulk_backupandrestore');
     }
   }
+*/
 
   if (!$obj->folder) {
     $obj->errors[] = get_string('invalidfolder', 'tool_bulk_backupandrestore');
